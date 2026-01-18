@@ -7,7 +7,8 @@ public class player : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private controller gameController;
-    //[SerializeField] private float gforce = 9.81f;
+
+    private bool isGrounded = false;
 
     // Start is called before the first frame update
     void Start()
@@ -20,9 +21,10 @@ public class player : MonoBehaviour
     void Update()
     {
         //press space to jump
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
         }
         //rb.AddForce(Vector2.down * gforce * Time.deltaTime, ForceMode2D.Force);
     }
@@ -33,6 +35,13 @@ public class player : MonoBehaviour
             Debug.Log("Coin Collected");
             gameController.IncreaseScore();
             Destroy(collision.gameObject);
+        }
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            isGrounded = true;
         }
     }
 }
